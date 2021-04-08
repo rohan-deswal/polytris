@@ -19,7 +19,7 @@ class GameBoard:
 	def __init__(self, bottom_left, top_right, n):
 		'''Inititalizes the GameBoard object, can take any values for bottom_left and top_right coordinates
 		   the top_right coordinate is modified to fit the aspect ratio of the gameBoard'''
-		
+
 		self.init_x = bottom_left[0]
 		self.init_y = bottom_left[1]
 
@@ -29,7 +29,7 @@ class GameBoard:
 
 		self.n = n
 
-	def draw_hold(self, block_drawing_function, batch):
+	def draw_hold(self, block_drawing_function):
 		'''Draws the polynimo holding chamber, by default the box is 4 grid widths wide
 		   this value is kind of hard coded, but it will be visually appealing 
 		   Pieces have to be shrunk to display
@@ -43,9 +43,9 @@ class GameBoard:
 		hold_x = self.init_x + self.grid//2
 		hold_y = self.init_y + self.height - hold_size - self.grid//2
 		shapes.Rectangle(hold_x, hold_y, hold_size, hold_size, (255,255,255)).draw()
-		block_drawing_function(hold_x, hold_y, batch)
+		block_drawing_function(hold_x, hold_y)
 
-	def draw_playing_area(self, block_drawing_function, batch):
+	def draw_playing_area(self, block_drawing_function):
 		'''Draws the actual palying area, dimensions are hard coded to be 10x20 following the 
 		   standard tetris board
 
@@ -60,9 +60,9 @@ class GameBoard:
 		play_height = self.grid * 20
 		shapes.Rectangle(play_x, play_y, play_width, play_height, (255,255,255)).draw()
 
-		block_drawing_function(play_x, play_y, batch)
+		block_drawing_function(play_x, play_y)
 
-	def draw_preview(self, block_drawing_function, batch):
+	def draw_preview(self, block_drawing_function):
 		'''Draws the next piece, currently the number of pieces that can be displayed is 1
 		   But it can be easily changed to any value
 
@@ -75,4 +75,4 @@ class GameBoard:
 		preview_x = self.init_x + 31*self.grid//2
 		preview_y = self.init_y + self.height - preview_size - self.grid//2
 		shapes.Rectangle(preview_x, preview_y, preview_size, preview_size, (255,255,255)).draw()
-		block_drawing_function(preview_x, preview_y, batch)
+		block_drawing_function(preview_x, preview_y)
