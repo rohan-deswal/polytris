@@ -26,9 +26,9 @@ gameBoard = GameBoard((0, 0), (width, height), 4)
 def on_draw():
 	pyglet.gl.glClearColor(0,0,0,1)
 	window.clear()
-	gameBoard.draw_hold(lambda x, y, b:None)
-	gameBoard.draw_playing_area(lambda x, y, b:None)
-	gameBoard.draw_preview(lambda x, y, b:None)
+	gameBoard.draw_hold(lambda x, y:None)
+	gameBoard.draw_playing_area(lambda x, y:None)
+	gameBoard.draw_preview(lambda x, y:None)
 
 
 # pyglet.clock.schedule(update)
