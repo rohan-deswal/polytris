@@ -4,7 +4,7 @@ def getPolyomino(n):
 	if n <= 0:
 		raise ValueError('Value of n must be greater than 0')
 	elif n == 1:
-		return [[0,0]]
+		return [[0,0]],[[0,0]]
 		'''
 		Here we have initialized the N=1 Polyomino which is a single cell
 		'''
@@ -65,7 +65,7 @@ def getPolyomino(n):
 									'''
 									if matrixPolyomino[x][y] == 1:
 										polyomino.append([x,y])
-							return polyomino	
+							return polyomino,matrixPolyomino	
 
 def checkForHoles(matrixPolyomino,n):
 	'''
