@@ -2,6 +2,26 @@ from random import randint
 
 import numpy as np
 
+def checkForHoles(matrixPolyomino,n):
+	'''
+	Function to check for holes 
+	to discard undesired polyominoes
+	'''
+	for i in range(n):
+		for j in range(n):
+			if matrixPolyomino[i][j] == 0:
+				boolList = [i-1>=0,i+1<n,j-1>=0,j+1<n]
+				if all(boolList):
+					newBoolList = [
+					matrixPolyomino[i-1][j] == 1,
+					matrixPolyomino[i+1][j] == 1,
+					matrixPolyomino[i][j-1] == 1,
+					matrixPolyomino[i][j+1] == 1
+					]
+					if all(newBoolList):
+						return True
+	return False
+
 def getPolyomino(n):
 	if n <= 0:
 		raise ValueError('Value of n must be greater than 0')
@@ -20,7 +40,7 @@ def getPolyomino(n):
 		'''
 		Initialization of the matrix that represents the polyomino
 		'''
-		matrixPolyomino = np.zeros((n,n), dtype=bool)#[[0 for i in range(n)] for j in range(n)]
+		matrixPolyomino = np.zeros((n,n), dtype='uint8')#[[0 for i in range(n)] for j in range(n)]
 		
 		'''
 		Seed Cell is begin set at [0,0]
@@ -67,24 +87,12 @@ def getPolyomino(n):
 									'''
 									if matrixPolyomino[x][y] == 1:
 										polyomino.append([x,y])
-							return polyomino, matrixPolyomino	
+							if not checkForHoles(matrixPolyomino, n):
+								return np.array(polyomino)
+							else:
+								pieces = 1
+								matrixPolyomino = np.zeros((n, n), dtype='uint8')
+								matrixPolyomino[0][0] = 1
+							# return polyomino, matrixPolyomino	
 
-def checkForHoles(matrixPolyomino,n):
-	'''
-	Function to check for holes 
-	to discard undesired polyominoes
-	'''
-	for i in range(n):
-		for j in range(n):
-			if matrixPolyomino[i][j] == 0:
-				boolList = [i-1>=0,i+1<n,j-1>=0,j+1<n]
-				if all(boolList):
-					newBoolList = [
-					matrixPolyomino[i-1][j] == 1,
-					matrixPolyomino[i+1][j] == 1,
-					matrixPolyomino[i][j-1] == 1,
-					matrixPolyomino[i][j+1] == 1
-					]
-					if all(newBoolList):
-						return True
-	return False
+
