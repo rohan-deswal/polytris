@@ -28,8 +28,9 @@ def translateToOrigin(coords):
     minY = min(yCoords)
     xCoords = [x - minX for x in xCoords]
     yCoords = [y - minY for y in yCoords]
+    coords = []
     for i in range(len(xCoords)):
-        coords = [xCoords[i],yCoords[i]]
+        coords.append([xCoords[i],yCoords[i]])
     return coords
 def getPolyomino(n):
 	if n <= 0:
@@ -105,34 +106,32 @@ def getPolyomino(n):
 							# return polyomino, matrixPolyomino	
 def getPolyomino_Backtracking(n):
     if n <= 0:
-	raise ValueError('Value of n must be greater than 0')
-    elif n == 1:
-	return [[0,0]],[[1]]
-	'''
-	Here we have initialized the N=1 Polyomino which is a single cell
-	'''
+	    raise ValueError('Value of n must be greater than 0')
+    elif n == 1: 
+        #Here we have initialized the N=1 Polyomino which is a single cell
+	    return [[0,0]],[[1]] 
 
     else:
-	'''
-	The function returns a list of coordinates from [0,0] to [n-1,n-1]
-	which form the Polyomino.
-	'''
+        '''
+        The function returns a list of coordinates from [0,0] to [n-1,n-1]
+        which form the Polyomino.
+        '''
 
-	'''
-	Initialization of the matrix that represents the polyomino
-	'''
-	matrixPolyomino = np.zeros((n,n), dtype='uint8')#[[0 for i in range(n)] for j in range(n)]
-		
-	'''
-	Seed Cell is begin set at [0,0]
-	'''
-	matrixPolyomino[0][0] = 1
+        '''
+        Initialization of the matrix that represents the polyomino
+        '''
+        matrixPolyomino = np.zeros((n,n), dtype='uint8')#[[0 for i in range(n)] for j in range(n)]
+            
+        '''
+        Seed Cell is begin set at [0,0]
+        '''
+        matrixPolyomino[0][0] = 1
 
-	pieces = 1
+        pieces = 1
         visited = [[0,0]]
         current = [0,0]
         while len(visited) < n:
-            neighbour = choice([0,1,2,3]) '''0 for LEFT 1 for RIGHT 2 for UP 3 for DOWN'''
+            neighbour = choice([0,1,2,3]) #'''0 for LEFT 1 for RIGHT 2 for UP 3 for DOWN'''
             neighbours = [[current[0]-1,current[1]],[current[0]+1,current[1]],[current[0],current[1]-1],[current[0],current[1]+1]]
             unvisited_neighbours = [cell for cell in neighbours if cell not in visited]
             if len(unvisited_neighbours) > 0:
@@ -145,13 +144,13 @@ def getPolyomino_Backtracking(n):
                 
                 visited = translateToOrigin(visited)
                 for cell in visited:
-                    matrixPolyomino[ele[0]][matrixPolyomino[ele[1]]] = 1
+                    matrixPolyomino[cell[0]][matrixPolyomino[cell[1]]] = 1
                 if not checkForHoles(matrixPolyomino, n):
-		    return np.array(polyomino)
-		else:
-		    pieces = 1
-		    matrixPolyomino = np.zeros((n, n), dtype='uint8')
-		    matrixPolyomino[0][0] = 1
+                    return matrixPolyomino#np.array(polyomino)
+                else:
+                    pieces = 1
+                    matrixPolyomino = np.zeros((n, n), dtype='uint8')
+                    matrixPolyomino[0][0] = 1
                     visited = [[0,0]]
                     current = [0,0]
 
