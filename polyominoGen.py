@@ -98,7 +98,7 @@ def getPolyomino(n):
 									if matrixPolyomino[x][y] == 1:
 										polyomino.append([x,y])
 							if not checkForHoles(matrixPolyomino, n):
-								return np.array(polyomino)
+								return np.array(polyomino),matrixPolyomino
 							else:
 								pieces = 1
 								matrixPolyomino = np.zeros((n, n), dtype='uint8')
@@ -119,16 +119,16 @@ def getPolyomino_Backtracking(n):
     		neighbour = choice([0,1,2,3]) #'''0 for LEFT 1 for RIGHT 2 for UP 3 for DOWN'''
     		neighbours = [[current[0]-1,current[1]],[current[0]+1,current[1]],[current[0],current[1]+1],[current[0],current[1]-1]]
     		unvisited_neighbours = [cell for cell in neighbours if cell not in visited]
-    		if len(unvisited_neighbours) > 0:
-    			current_choice = choice(unvisited_neighbours)
-    			visited.append(current_choice)
-    			current = current_choice
+    		
+    		nextCell = choice(neighbours)
+    		if nextCell in visited:
+    			current = nextCell
     		else:
-    			current = visited[-2]
+    			current = nextCell
+    			visited.append(nextCell)
+
     		if len(visited) == n:
-    			
     			visited = translateToOrigin(visited)
-    			# print(visited)
     			matrixPolyomino[0][0] = 0
     			for cell in visited:
     				matrixPolyomino[cell[0]][cell[1]] = 1
