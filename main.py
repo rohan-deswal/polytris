@@ -1,5 +1,6 @@
 import pyglet
 from gameBoard import *
+from polyomino import *
 
 n = 4 #the 'n' in n-tris
 
@@ -12,7 +13,7 @@ batch = pyglet.graphics.Batch()
 # cell = Cell([window.width//2, window.height//2], grid, (255,0,0))
 
 gameBoard = GameBoard((0, 0), (width, height), 4)
-
+polyomino = Polyomino(n, 5, 10, width//20)
 # def draw_label(text, x, y, font_size):
 # 	label = pyglet.text.Label("Hello, World!!",
 # 					   font_name="Times New Roman",
@@ -29,7 +30,11 @@ def on_draw():
 	gameBoard.draw_hold(lambda x, y:None)
 	gameBoard.draw_playing_area(lambda x, y:None)
 	gameBoard.draw_preview(lambda x, y:None)
+	polyomino.draw()
 
+@window.event
+def update(dt):
+	polyomino.update(0)
 
-# pyglet.clock.schedule(update)
+pyglet.clock.schedule(update)
 pyglet.app.run()
