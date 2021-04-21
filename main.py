@@ -3,7 +3,7 @@ from gameBoard import *
 from polyomino import *
 from pyglet.window.key import *
 
-n = 4 #the 'n' in n-tris
+n = 5 #the 'n' in n-tris
 
 width = 600
 height = 600
@@ -29,7 +29,7 @@ def on_key_press(symbol,modifiers):
 		polyomino.update(-1,0)
 	elif symbol == RIGHT:
 		polyomino.update(1,0)
-	if symbol == UP:
+	elif symbol == UP:
 		polyomino.rotate('c')
 	elif symbol == SPACE:
 		polyomino.rotate('a')

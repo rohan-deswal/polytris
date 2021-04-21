@@ -43,7 +43,7 @@ class Polyomino:
 	def rotate(self,rdir):
 		 pivot = self.centreOfMass()
 		 minVal = self.findMinX_or_Y(rdir)
-		 print(minVal)
+
 		 for point in self.shapeCoords:
 		 	c,s = rotationValues[rdir][0],rotationValues[rdir][1]
 
