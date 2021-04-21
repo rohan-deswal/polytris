@@ -1,6 +1,7 @@
 import pyglet
 from gameBoard import *
 from polyomino import *
+from pyglet.window.key import *
 
 n = 4 #the 'n' in n-tris
 
@@ -22,6 +23,17 @@ polyomino = Polyomino(n, 5, 10, width//20)
 # 					   anchor_x='center', 
 # 					   anchor_y='center')
 # 	label.draw()
+@window.event
+def on_key_press(symbol,modifiers):
+	if symbol == LEFT:
+		polyomino.update(-1,0)
+	elif symbol == RIGHT:
+		polyomino.update(1,0)
+	if symbol == UP:
+		polyomino.rotate('c')
+	elif symbol == SPACE:
+		polyomino.rotate('a')
+
 
 @window.event
 def on_draw():
@@ -34,7 +46,8 @@ def on_draw():
 
 @window.event
 def update(dt):
-	polyomino.update(0)
+	# polyomino.update(0,-1)
+	pass
 
 pyglet.clock.schedule(update)
 pyglet.app.run()
