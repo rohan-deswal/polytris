@@ -21,10 +21,12 @@ class Polyomino:
 			coord[1] += yPos
 		self.wallLeft = wl
 		self.wallRight = wr
+
 	def reset(self,xPos,yPos):
 		self.__init__(self.n, xPos, yPos,self.scale,self.wallLeft,self.wallRight)
+
 	def update(self,ydir):
-		self.y += self.vel*ydir*5
+		self.y += self.vel*ydir
 		self.x += self.vel*self.xdir*10
 		
 		for coord in self.shapeCoords:
@@ -67,6 +69,7 @@ class Polyomino:
 
 		 newMinVal = self.findMinX_or_Y(rdir)
 		 diff = minVal - newMinVal
+
 		 if rdir == 'c':
 		 	for point in self.shapeCoords:
 		 		point[1] += diff
@@ -84,6 +87,7 @@ class Polyomino:
 			return min(point[1] for point in self.shapeCoords)
 		if rdir == 'a':
 			return min(point[0] for point in self.shapeCoords)
+
 	def wallConstraint(self):
 		maxX = max(point[0] for point in self.shapeCoords)
 		minX = min(point[0] for point in self.shapeCoords)
@@ -95,6 +99,7 @@ class Polyomino:
 			diff = self.wallLeft - minX
 			for point in self.shapeCoords:
 				point[0] += diff
+				
 	def draw(self):
 		for point in self.shapeCoords:
 			i = point[0]

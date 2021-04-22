@@ -18,6 +18,7 @@ batch = pyglet.graphics.Batch()
 gameBoard = GameBoard((0, 0), (width, height), 4)
 polyomino = Polyomino(n, startX, startY, width//20,5,15)
 pile = Pile(width//20, 5, 15)
+
 # def draw_label(text, x, y, font_size):
 # 	label = pyglet.text.Label("Hello, World!!",
 # 					   font_name="Times New Roman",
@@ -26,6 +27,7 @@ pile = Pile(width//20, 5, 15)
 # 					   anchor_x='center', 
 # 					   anchor_y='center')
 # 	label.draw()
+
 @window.event
 def on_key_press(symbol,modifiers):
 	if symbol == LEFT:

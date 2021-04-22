@@ -9,6 +9,7 @@ class Pile:
 		self.maxY = bottom + 1
 		self.wallLeft = wl
 		self.wallRight = wr
+
 	def addToPile(self,shapeCoords):
 		for point in shapeCoords:
 			self.cellCoords.append([point[0],point[1]])
@@ -34,6 +35,7 @@ class Pile:
 			for x in range(self.wallLeft,self.wallRight):
 				if self.findList([x,y]):
 					count += 1
+					
 			if count == self.wallRight - self.wallLeft:
 				for x in range(self.wallLeft,self.wallRight):
 					self.cellCoords.remove([x,y])
@@ -44,6 +46,7 @@ class Pile:
 							self.cellCoords.append([x,ny-1])
 
 			count = 0
+
 	def draw(self):
 		for coord in self.cellCoords:
 			i = coord[0]
