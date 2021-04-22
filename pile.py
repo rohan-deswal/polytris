@@ -39,14 +39,23 @@ class Pile:
 			if count == self.wallRight - self.wallLeft:
 				for x in range(self.wallLeft,self.wallRight):
 					self.cellCoords.remove([x,y])
-				for ny in range(y,self.maxY+1):
+				for ny in range(y+1,self.maxY+1):
 					for x in range(self.wallLeft,self.wallRight):
 						if self.findList([x,ny]):
 							self.cellCoords.remove([x,ny])
 							self.cellCoords.append([x,ny-1])
 
 			count = 0
+	def pullDown(self,shapeCoords):
+		for point in shapeCoords:
+			point[1] -= 1
+		return shapeCoords
 
+	def hardDrop(self,shapeCoords):
+		while True:
+			if self.collidePolyomino(shapeCoords):
+				break
+			shapeCoords = self.pullDown(shapeCoords)
 	def draw(self):
 		for coord in self.cellCoords:
 			i = coord[0]

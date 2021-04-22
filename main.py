@@ -36,8 +36,10 @@ def on_key_press(symbol,modifiers):
 		polyomino.setxdir(1)
 	elif symbol == UP:
 		polyomino.rotate('c')
-	elif symbol == SPACE:
+	elif symbol == LCTRL:
 		polyomino.rotate('a')
+	elif symbol == SPACE:
+		pile.hardDrop(polyomino.shapeCoords)
 @window.event
 def on_key_release(symbol,modifiers):
 	if symbol == LEFT or symbol == RIGHT:
