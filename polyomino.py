@@ -6,7 +6,7 @@ rotationValues = {
 	'a': [0,1]
 }
 class Polyomino:
-	def __init__(self,n,xPos,yPos,scale):
+	def __init__(self,n,xPos,yPos,scale,wl,wr):
 		self.n = n
 		self.shapeCoords,self.shapeMatrix = getPolyomino_Backtracking(n)
 		self.xPos = xPos
@@ -15,22 +15,30 @@ class Polyomino:
 		self.y = yPos * scale
 		self.vel = -0.5
 		self.scale = scale
+		self.xdir = 0
 		for coord in self.shapeCoords:
 			coord[0] += xPos
 			coord[1] += yPos
+		self.wallLeft = wl
+		self.wallRight = wr
 
-	def update(self,xdir,ydir):
+	def update(self,ydir):
 		self.y += self.vel*ydir
-		self.xPos += xdir
-		self.x = self.xPos * self.scale
+		self.x += self.vel*self.xdir*10
+		
 		for coord in self.shapeCoords:
-			coord[0] += xdir
+			coord[0] += self.xPos - int(self.x)//self.scale
 			coord[1] += self.yPos - int(self.y)//self.scale
+
 		self.yPos = int(self.y)//self.scale
+		self.xPos = int(self.x)//self.scale
+
+		self.wallConstraint()
 
 	def centreOfMass(self):
 		x_centreOfMass = 0
 		y_centreOfMass = 0
+
 		for point in self.shapeCoords:
 			x_centreOfMass += point[0]
 			y_centreOfMass += point[1]
@@ -65,15 +73,30 @@ class Polyomino:
 		 	for point in self.shapeCoords:
 		 		point[0] += diff
 
+	def setxdir(self,xdir):
+		self.xdir = xdir
+		for point in self.shapeCoords:
+			point[0] += xdir
+
 	def findMinX_or_Y(self,rdir):
 		if rdir == 'c':
 			return min(point[1] for point in self.shapeCoords)
 		if rdir == 'a':
 			return min(point[0] for point in self.shapeCoords)
-
+	def wallConstraint(self):
+		maxX = max(point[0] for point in self.shapeCoords)
+		minX = min(point[0] for point in self.shapeCoords)
+		if maxX > self.wallRight - 1:
+			diff = maxX - self.wallRight + 1
+			for point in self.shapeCoords:
+				point[0] -= diff
+		if minX < self.wallLeft:
+			diff = self.wallLeft - minX
+			for point in self.shapeCoords:
+				point[0] += diff
 	def draw(self):
 		for point in self.shapeCoords:
 			i = point[0]
 			j = point[1]
-			shapes.Rectangle(i*self.scale, j*self.scale, self.scale, self.scale, (255,179,71)).draw()
-
+			shapes.BorderedRectangle(i*self.scale, j*self.scale, self.scale, self.scale,1,(255,179,71),(0,0,0)).draw()
+ 

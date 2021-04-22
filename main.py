@@ -3,7 +3,7 @@ from gameBoard import *
 from polyomino import *
 from pyglet.window.key import *
 
-n = 5 #the 'n' in n-tris
+n = 4 #the 'n' in n-tris
 
 width = 600
 height = 600
@@ -14,7 +14,7 @@ batch = pyglet.graphics.Batch()
 # cell = Cell([window.width//2, window.height//2], grid, (255,0,0))
 
 gameBoard = GameBoard((0, 0), (width, height), 4)
-polyomino = Polyomino(n, 5, 10, width//20)
+polyomino = Polyomino(n, 5, 10, width//20,5,15)
 # def draw_label(text, x, y, font_size):
 # 	label = pyglet.text.Label("Hello, World!!",
 # 					   font_name="Times New Roman",
@@ -26,14 +26,17 @@ polyomino = Polyomino(n, 5, 10, width//20)
 @window.event
 def on_key_press(symbol,modifiers):
 	if symbol == LEFT:
-		polyomino.update(-1,0)
+		polyomino.setxdir(-1)
 	elif symbol == RIGHT:
-		polyomino.update(1,0)
+		polyomino.setxdir(1)
 	elif symbol == UP:
 		polyomino.rotate('c')
 	elif symbol == SPACE:
 		polyomino.rotate('a')
-
+@window.event
+def on_key_release(symbol,modifiers):
+	if symbol == LEFT or symbol == RIGHT:
+	    polyomino.setxdir(0)
 
 @window.event
 def on_draw():
@@ -46,8 +49,7 @@ def on_draw():
 
 @window.event
 def update(dt):
-	# polyomino.update(0,-1)
-	pass
+	polyomino.update(-1)
 
 pyglet.clock.schedule(update)
 pyglet.app.run()
