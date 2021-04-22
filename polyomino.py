@@ -21,9 +21,10 @@ class Polyomino:
 			coord[1] += yPos
 		self.wallLeft = wl
 		self.wallRight = wr
-
+	def reset(self,xPos,yPos):
+		self.__init__(self.n, xPos, yPos,self.scale,self.wallLeft,self.wallRight)
 	def update(self,ydir):
-		self.y += self.vel*ydir
+		self.y += self.vel*ydir*5
 		self.x += self.vel*self.xdir*10
 		
 		for coord in self.shapeCoords:
