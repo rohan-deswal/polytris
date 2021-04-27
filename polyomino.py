@@ -86,7 +86,7 @@ class Polyomino:
 		if rdir == 'c':
 			return min(point[1] for point in self.shapeCoords)
 		if rdir == 'a':
-			return min(point[0] for point in self.shapeCoords)
+			return max(point[0] for point in self.shapeCoords)
 
 	def wallConstraint(self):
 		maxX = max(point[0] for point in self.shapeCoords)
