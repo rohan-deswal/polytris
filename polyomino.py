@@ -27,16 +27,16 @@ class Polyomino:
 
 	def update(self,ydir):
 		self.y += self.vel*ydir
-		self.x += self.vel*self.xdir*10
+		# self.x += self.vel*self.xdir*10
 		
 		for coord in self.shapeCoords:
-			coord[0] += self.xPos - int(self.x)//self.scale
+			# coord[0] += self.xPos - int(self.x)//self.scale
 			coord[1] += self.yPos - int(self.y)//self.scale
 
 		self.yPos = int(self.y)//self.scale
-		self.xPos = int(self.x)//self.scale
+		# self.xPos = int(self.x)//self.scale
 
-		self.wallConstraint()
+		# self.wallConstraint()
 
 	def centreOfMass(self):
 		x_centreOfMass = 0
@@ -79,8 +79,11 @@ class Polyomino:
 
 	def setxdir(self,xdir):
 		self.xdir = xdir
+		self.xPos += self.xdir
+		self.x = self.xPos*self.scale
 		for point in self.shapeCoords:
 			point[0] += xdir
+		self.wallConstraint()
 
 	def findMinX_or_Y(self,rdir):
 		if rdir == 'c':

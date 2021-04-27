@@ -3,7 +3,7 @@ from gameBoard import *
 from polyomino import *
 from pile import *
 from pyglet.window.key import *
-
+from time import time
 
 n = 4 #the 'n' in n-tris
 startX,startY = 5,21
@@ -12,6 +12,10 @@ height = 600
 
 window = pyglet.window.Window(width, height, caption = 'Tetris')
 batch = pyglet.graphics.Batch()
+keys = KeyStateHandler()
+
+begin = time()
+delayedAutoShiftRate = 1
 
 # cell = Cell([window.width//2, window.height//2], grid, (255,0,0))
 
@@ -30,16 +34,22 @@ pile = Pile(width//20, 5, 15)
 
 @window.event
 def on_key_press(symbol,modifiers):
+	global begin
 	if symbol == LEFT:
-		polyomino.setxdir(-1)
+		if pile.verifyXMotion(polyomino.shapeCoords,-1):
+			polyomino.setxdir(-1)
+			begin = time()
 	elif symbol == RIGHT:
-		polyomino.setxdir(1)
+		if pile.verifyXMotion(polyomino.shapeCoords,1):
+			polyomino.setxdir(1)
+			begin = time()
 	elif symbol == UP:
 		polyomino.rotate('c')
 	elif symbol == LCTRL:
 		polyomino.rotate('a')
 	elif symbol == SPACE:
 		pile.hardDrop(polyomino.shapeCoords)
+
 @window.event
 def on_key_release(symbol,modifiers):
 	if symbol == LEFT or symbol == RIGHT:
@@ -57,11 +67,23 @@ def on_draw():
 
 @window.event
 def update(dt):
+	global begin	
+
 	if pile.collidePolyomino(polyomino.shapeCoords):
 		polyomino.reset(startX,startY)
 		pile.update()
 	else:
 		polyomino.update(-1)
+
+	if time() - begin > abs(delayedAutoShiftRate - (time()-begin)):
+		window.push_handlers(keys)
+		if keys[LEFT]:
+			if pile.verifyXMotion(polyomino.shapeCoords,-1):
+				polyomino.setxdir(-1)
+		elif keys[RIGHT]:
+			if pile.verifyXMotion(polyomino.shapeCoords,1):
+				polyomino.setxdir(1)
+
 
 pyglet.clock.schedule(update)
 pyglet.app.run()

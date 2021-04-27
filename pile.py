@@ -46,6 +46,7 @@ class Pile:
 							self.cellCoords.append([x,ny-1])
 
 			count = 0
+
 	def pullDown(self,shapeCoords):
 		for point in shapeCoords:
 			point[1] -= 1
@@ -56,6 +57,14 @@ class Pile:
 			if self.collidePolyomino(shapeCoords):
 				break
 			shapeCoords = self.pullDown(shapeCoords)
+
+	def verifyXMotion(self,shapeCoords,xdir):
+		for point in shapeCoords:
+			if self.findList([point[0] + xdir,point[1]]):
+				return False
+		else:
+			return True
+
 	def draw(self):
 		for coord in self.cellCoords:
 			i = coord[0]
