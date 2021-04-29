@@ -26,17 +26,10 @@ class Polyomino:
 		self.__init__(self.n, xPos, yPos,self.scale,self.wallLeft,self.wallRight)
 
 	def update(self,ydir):
-		self.y += self.vel*ydir
-		# self.x += self.vel*self.xdir*10
-		
+		self.y += self.vel*ydir		
 		for coord in self.shapeCoords:
-			# coord[0] += self.xPos - int(self.x)//self.scale
 			coord[1] += self.yPos - int(self.y)//self.scale
-
 		self.yPos = int(self.y)//self.scale
-		# self.xPos = int(self.x)//self.scale
-
-		# self.wallConstraint()
 
 	def centreOfMass(self):
 		x_centreOfMass = 0
@@ -107,5 +100,7 @@ class Polyomino:
 		for point in self.shapeCoords:
 			i = point[0]
 			j = point[1]
-			shapes.BorderedRectangle(i*self.scale, j*self.scale, self.scale, self.scale,1,(255,179,71),(0,0,0)).draw()
+			shapes.BorderedRectangle(i*self.scale, j*self.scale,
+									  self.scale, self.scale,1,
+									  (255,179,71),(0,0,0)).draw()
  

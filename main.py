@@ -16,6 +16,9 @@ keys = KeyStateHandler()
 
 begin = time()
 delayedAutoShiftRate = 1
+polyominoTuckDelay = 2
+polyominoTuckDelayCounter = 0
+pieceIsDown = False
 
 # cell = Cell([window.width//2, window.height//2], grid, (255,0,0))
 
@@ -49,6 +52,7 @@ def on_key_press(symbol,modifiers):
 		polyomino.rotate('a')
 	elif symbol == SPACE:
 		pile.hardDrop(polyomino.shapeCoords)
+		polyomino.reset(startX, startY)
 
 @window.event
 def on_key_release(symbol,modifiers):
@@ -67,14 +71,23 @@ def on_draw():
 
 @window.event
 def update(dt):
-	global begin	
+	global begin,polyominoTuckDelayCounter,polyominoTuckDelay,pieceIsDown	
 
 	if pile.collidePolyomino(polyomino.shapeCoords):
-		polyomino.reset(startX,startY)
+		if not pieceIsDown:
+			polyominoTuckDelayCounter = time()
 		pile.update()
+		polyomino.update(0)
+		pieceIsDown = True
 	else:
 		polyomino.update(-1)
+		pieceIsDown = False
 
+	if time() - polyominoTuckDelayCounter >= polyominoTuckDelay and pieceIsDown:
+		pile.addPolyomino(polyomino.shapeCoords)
+		polyomino.reset(startX,startY)
+		pieceIsDown = False
+		
 	if time() - begin > abs(delayedAutoShiftRate - (time()-begin)):
 		window.push_handlers(keys)
 		if keys[LEFT]:
@@ -83,7 +96,6 @@ def update(dt):
 		elif keys[RIGHT]:
 			if pile.verifyXMotion(polyomino.shapeCoords,1):
 				polyomino.setxdir(1)
-
 
 pyglet.clock.schedule(update)
 pyglet.app.run()

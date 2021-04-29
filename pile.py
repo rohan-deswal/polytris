@@ -19,10 +19,11 @@ class Pile:
 	def collidePolyomino(self,shapeCoords):
 		for piece in shapeCoords:
 			if self.findList([piece[0],piece[1]-1]):
-				self.addToPile(shapeCoords)
 				return True
 		return False
-
+	def addPolyomino(self,shapeCoords):
+		for piece in shapeCoords:
+			self.addToPile(shapeCoords)
 	def findList(self,coord):
 		for point in self.cellCoords:
 			if point[0] == coord[0] and point[1] == coord[1]:
@@ -36,7 +37,7 @@ class Pile:
 				if self.findList([x,y]):
 					count += 1
 					
-			if count == self.wallRight - self.wallLeft:
+			if count == self.wallRight - self.wallLeft + 1:
 				for x in range(self.wallLeft,self.wallRight):
 					self.cellCoords.remove([x,y])
 				for ny in range(y+1,self.maxY+1):
@@ -55,6 +56,7 @@ class Pile:
 	def hardDrop(self,shapeCoords):
 		while True:
 			if self.collidePolyomino(shapeCoords):
+				self.addPolyomino(shapeCoords)
 				break
 			shapeCoords = self.pullDown(shapeCoords)
 
