@@ -1,5 +1,7 @@
 from polyominoGen import *
 from pyglet import shapes
+from random import seed
+from random import random as rnd
 
 rotationValues = {
 	'c': [0,-1],
@@ -21,9 +23,16 @@ class Polyomino:
 			coord[1] += yPos
 		self.wallLeft = wl
 		self.wallRight = wr
-
+		self.seed = 0
+		self.genSeed()
 	def reset(self,xPos,yPos):
 		self.__init__(self.n, xPos, yPos,self.scale,self.wallLeft,self.wallRight)
+
+	def genSeed(self):
+		for i in range(self.n):
+			for j in range(self.n):
+				if self.shapeMatrix[i][j] == 1:
+					self.seed += (i+1) + (j+1)*self.n
 
 	def update(self,ydir):
 		self.y += self.vel*ydir		
@@ -98,9 +107,9 @@ class Polyomino:
 				
 	def draw(self):
 		for point in self.shapeCoords:
+			seed(self.seed)
 			i = point[0]
 			j = point[1]
 			shapes.BorderedRectangle(i*self.scale, j*self.scale,
 									  self.scale, self.scale,1,
-									  (255,179,71),(0,0,0)).draw()
- 
+									  (int(255*rnd()),int(255*rnd()),int(255*rnd())),(0,0,0)).draw()

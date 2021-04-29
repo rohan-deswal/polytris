@@ -2,6 +2,7 @@ import pyglet
 from gameBoard import *
 from polyomino import *
 from pile import *
+from pile_redesign import *
 from pyglet.window.key import *
 from time import time
 
@@ -24,7 +25,8 @@ pieceIsDown = False
 
 gameBoard = GameBoard((0, 0), (width, height), 4)
 polyomino = Polyomino(n, startX, startY, width//20,5,15)
-pile = Pile(width//20, 5, 15)
+# pile = Pile(width//20, 5, 15)
+pile = Pile_redesign(width//20, 20, 5, 15)
 
 # def draw_label(text, x, y, font_size):
 # 	label = pyglet.text.Label("Hello, World!!",
@@ -53,6 +55,7 @@ def on_key_press(symbol,modifiers):
 	elif symbol == SPACE:
 		pile.hardDrop(polyomino.shapeCoords)
 		polyomino.reset(startX, startY)
+		pile.update()
 
 @window.event
 def on_key_release(symbol,modifiers):
@@ -76,7 +79,6 @@ def update(dt):
 	if pile.collidePolyomino(polyomino.shapeCoords):
 		if not pieceIsDown:
 			polyominoTuckDelayCounter = time()
-		pile.update()
 		polyomino.update(0)
 		pieceIsDown = True
 	else:
@@ -86,8 +88,9 @@ def update(dt):
 	if time() - polyominoTuckDelayCounter >= polyominoTuckDelay and pieceIsDown:
 		pile.addPolyomino(polyomino.shapeCoords)
 		polyomino.reset(startX,startY)
+		pile.update()
 		pieceIsDown = False
-		
+
 	if time() - begin > abs(delayedAutoShiftRate - (time()-begin)):
 		window.push_handlers(keys)
 		if keys[LEFT]:
