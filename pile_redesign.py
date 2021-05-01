@@ -11,45 +11,51 @@ class Pile_redesign:
 		self.wallLeft = wl
 		self.wallRight = wr
 
+	def indexX(self,point):
+		return point[0] - self.wallLeft
+	def indexY(self,point):
+		return point[1] - self.bottom
 	def addToPile(self,shapeCoords):
 		for point in shapeCoords:
-			self.grid[point[0]-self.wallLeft][point[1]-self.bottom] = 1
+			self.grid[self.indexX(point)][self.indexY(point)] = 1
 			if point[1] > self.maxY:
 				self.maxY = point[1]
 
+	def rotationCheck(self,shapeCoords):
+		pass
+
 	def collidePolyomino(self,shapeCoords):
-		for piece in shapeCoords:
+		for point in shapeCoords:
 			try:
-				if self.grid[piece[0]-self.wallLeft][piece[1]-self.bottom - 1] == 1:
+				if self.grid[self.indexX(point)][self.indexY(point) - 1] == 1:
 					return True
 			except IndexError:
 				continue
 		return False
 
-	def addPolyomino(self,shapeCoords):
-		for piece in shapeCoords:
-			self.addToPile(shapeCoords)
-			
-	def findList(self,coord):
-		for point in self.cellCoords:
-			if point[0] == coord[0] and point[1] == coord[1]:
-				return True
-		return False
-
 	def update(self):
-		for y in range(1,len(self.gridHeight)):
+		y = 1
+		while y<self.gridHeight+1:
 			sumPoly = 0
-			for x in range(self.wallLeft-self.wallRight):
-				if grid[x][y] == 1:
+			for x in range(self.wallRight-self.wallLeft):
+				if self.grid[x][y] == 1:
 					sumPoly += 1
-			if sumPoly == self.wallLeft-self.wallRight:
-				for x in range(self.wallLeft-self.wallRight):
-					grid[x][y] = 0
+					
+			if sumPoly == self.wallRight-self.wallLeft:
+				for x in range(self.wallRight-self.wallLeft):
+					self.grid[x][y] = 0
 
-			for ny in range(y+1,self.gridHeight):
-				if grid[x][y+1] == 1:
-					grid[x][y-1] == 1
-
+				
+				for ny in range(y+1,self.gridHeight+1):
+					for x in range(self.wallRight-self.wallLeft):
+						try:
+							if self.grid[x][ny] == 1:
+								self.grid[x][ny-1] = 1
+								self.grid[x][ny] = 0
+						except IndexError:
+							pass
+			else:
+				y += 1
 	def pullDown(self,shapeCoords):
 		for point in shapeCoords:
 			point[1] -= 1
@@ -58,14 +64,14 @@ class Pile_redesign:
 	def hardDrop(self,shapeCoords):
 		while True:
 			if self.collidePolyomino(shapeCoords):
-				self.addPolyomino(shapeCoords)
+				self.addToPile(shapeCoords)
 				break
 			shapeCoords = self.pullDown(shapeCoords)
 
 	def verifyXMotion(self,shapeCoords,xdir):
 		for point in shapeCoords:
 			try:
-				if self.grid[point[0] - self.wallLeft + xdir][point[1]-self.bottom] == 1:
+				if self.grid[self.indexX(point) + xdir][self.indexY(point)] == 1:
 					return False
 			except IndexError:
 				continue

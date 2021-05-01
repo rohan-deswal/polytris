@@ -86,7 +86,7 @@ def update(dt):
 		pieceIsDown = False
 
 	if time() - polyominoTuckDelayCounter >= polyominoTuckDelay and pieceIsDown:
-		pile.addPolyomino(polyomino.shapeCoords)
+		pile.addToPile(polyomino.shapeCoords)
 		polyomino.reset(startX,startY)
 		pile.update()
 		pieceIsDown = False
