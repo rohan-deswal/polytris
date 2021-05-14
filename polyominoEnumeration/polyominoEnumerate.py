@@ -6,7 +6,7 @@ def enumeratePolyominoes(n):
 
 	currentPolyominoes = [PowerPolyomino([[0,0]])]
 	nextPolyominoes = []
-	for i in range(1,n+1):
+	for i in range(1,n-1):
 		for powerPolyomino in currentPolyominoes:
 			index = 0
 			while index > len(powerPolyomino.updatedPolyominoes):
@@ -18,7 +18,13 @@ def enumeratePolyominoes(n):
 			nextPolyominoes += powerPolyomino.updatedPolyominoes
 
 		nextPolyominoes = removeDuplicates(nextPolyominoes)
-		currentPolyominoes = nextPolyominoes
+		currentPolyominoes = [PowerPolyomino(polyomino.listOfCells) for polyomino in nextPolyominoes]
 		nextPolyominoes = []
 
 	return [BasePolyomino(powerPolyomino.listOfCells) for powerPolyomino in currentPolyominoes]
+
+x = enumeratePolyominoes(n := int(input("Enter N: ")))
+print("List of Polyominoes")
+for ele in x:
+	printPoly(ele.listOfCells,n)
+	a = input()

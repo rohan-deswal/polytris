@@ -15,27 +15,33 @@ def getRotations(basePolyomino):
 			rotations.append(basePolyomino)
 	return rotations
 
-def translateToOrigin(basePolyomino):
-	minX = [min([cell[0] for cell in basePolyomino.listOfCells])]
-	minY = [min([cell[1] for cell in basePolyomino.listOfCells])]
-
-	for cell in basePolyomino.listOfCells:
-		cell[0] -= minX
-		cell[1] -= minY
-	return basePolyomino
+def translateToOrigin(listOfCells):
+	minX = min([cell[0] for cell in listOfCells])
+	minY = min([cell[1] for cell in listOfCells])
+	print(minX,minY)
+	print("Before:",listOfCells)
+	for i in range(len(listOfCells)):
+		listOfCells[i][0] -= minX
+		listOfCells[i][1] -= minY
+	print("After:",listOfCells)
+	return listOfCells
 
 def getValidationList(basePolyomino):
 	return [translateToOrigin(rotatedBasePolyomino) for rotatedBasePolyomino in getRotations(basePolyomino)]
 
 def removeDuplicates(polyominoes):
 	index = 0
-	indicesToRemove = []
+	
 	while index < len(polyominoes)-1:
+		indicesToRemove = []
 		for i in range(index+1,len(polyominoes)):
-			if sorted(polyominoes[index].listOfCells) == sorted(polyominoes[index+i].listOfCells):
-				indicesToRemove.append(index+i)
-	for index in indicesToRemove:
-		del polyominoes[index]
+			if sorted(polyominoes[index].listOfCells) == sorted(polyominoes[i].listOfCells):
+				indicesToRemove.append(i)
+		index += 1
+		indicesToRemove = list(set(indicesToRemove))
+		indicesToRemove = sorted(indicesToRemove, reverse=True)
+		for subIndex in indicesToRemove:
+			del polyominoes[subIndex]
 	return polyominoes
 def removeByValidator(validator,polyominoes):
 	index = 0
@@ -46,3 +52,13 @@ def removeByValidator(validator,polyominoes):
 	for index in indicesToRemove:
 		del polyominoes[index]
 	return polyominoes
+
+def printPoly(listOfCells,n):
+	print("Printing")
+	for i in range(n):
+		for j in range(n):
+			if [i,j] in listOfCells:
+				print('#',end='')
+			else:
+				print(' ',end='')
+		print('')
