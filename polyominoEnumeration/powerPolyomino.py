@@ -3,7 +3,7 @@ import validationHelp
 '''
 This class here inherits from the BasePolyomino Class
 This class has internal functions to handle growth
-and internal translation to the Origin
+and internal translation to the Origin 
 '''
 class PowerPolyomino(BasePolyomino):
 	def __init__(self,listOfCells):

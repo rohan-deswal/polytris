@@ -5,7 +5,7 @@ from validationHelp import *
 '''
 This is the main Polyomino Enumeration function which handles:
 	Initiation
-	Validation Against Rotations
+	Validation Against Rotations 
 	Growth
 '''
 def enumeratePolyominoes(n):

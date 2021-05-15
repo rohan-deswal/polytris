@@ -1,6 +1,6 @@
 from math import sin,cos,radians
 '''
-These are various helper functinos aid in
+These are various helper functinos aid in 
 polyomino enumeration
 '''
 
