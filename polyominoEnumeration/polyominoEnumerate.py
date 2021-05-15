@@ -16,7 +16,7 @@ def enumeratePolyominoes(n):
 	currentPolyominoes = [PowerPolyomino([[0,0]])]
 	nextPolyominoes = []
 	
-	for i in range(1,n-1): #This line represents the order of Growth For the required Polyominos
+	for i in range(1,n): #This line represents the order of Growth For the required Polyominos
 		for powerPolyomino in currentPolyominoes:
 			index = 0
 			while index > len(powerPolyomino.updatedPolyominoes):
@@ -49,3 +49,7 @@ def enumeratePolyominoes(n):
 	return [BasePolyomino(powerPolyomino.listOfCells) for powerPolyomino in currentPolyominoes]
 
 x = enumeratePolyominoes(n := int(input("Enter N: ")))
+
+for polyomino in x:
+	# print(polyomino.listOfCells)
+	printPoly(polyomino.listOfCells, n)

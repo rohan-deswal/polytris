@@ -1,4 +1,6 @@
 from math import sin,cos,radians
+
+import numpy as np
 '''
 These are various helper functinos aid in 
 polyomino enumeration
@@ -54,14 +56,14 @@ def translateToOrigin(listOfCells):
 	minX = min([cell[0] for cell in listOfCells])
 	minY = min([cell[1] for cell in listOfCells])
 	
-	print(minX,minY)#Debugging
-	print("Before:",listOfCells)#Debugging
+	# print(minX,minY)#Debugging
+	# print("Before:\n",listOfCells)#Debugging
 	
 	for i in range(len(listOfCells)):
 		listOfCells[i][0] -= minX
 		listOfCells[i][1] -= minY
 	
-	print("After:",listOfCells)#Debugging
+	# print("After:\n",listOfCells)#Debugging
 
 	return listOfCells
 
@@ -90,7 +92,7 @@ def removeDuplicates(polyominoes):
 			The line below compares the list of cells of the current polyomino
 			to the list of cells of the next polyomino
 			'''
-			if sorted(polyominoes[index].listOfCells) == sorted(polyominoes[i].listOfCells):
+			if compareListsOfLists(np.sort(polyominoes[index].listOfCells),np.sort(polyominoes[i].listOfCells)):
 				indicesToRemove.append(i) # Adding the index to which has to be removed
 		index += 1
 
@@ -117,7 +119,7 @@ def removeByValidator(validator,polyominoes):
 	indicesToRemove = []
 	
 	while index < len(polyominoes):
-		if sorted(validator.listOfCells) == sorted(polyominoes.listOfCells):
+		if np.sort(validator.listOfCells) == np.sort(polyominoes.listOfCells):
 			indicesToRemove.append(index)
 	
 	indicesToRemove = list(set(indicesToRemove))
@@ -135,9 +137,34 @@ def printPoly(listOfCells,n):
 	print("Polyomino: ")
 	for i in range(n):
 		for j in range(n):
-			if [i,j] in listOfCells:
+			if searchListInListOfLists([i,j], listOfCells):
 				print('#',end='')
 			else:
 				print(' ',end='')
 		print('')
 	print("_________________________")
+
+
+'''
+Searching Functions
+'''
+def searchListInListOfLists(subList,listOfLists):
+	found = False
+	for _subList in listOfLists:
+		if compareList(_subList,subList):
+			found = True
+			break
+	return found
+def compareListsOfLists(listOfLists1,listOfLists2):
+	count = 0
+	for i in range(len(listOfLists1)):
+		if compareList(listOfLists1[i], listOfLists2[i]):
+			count += 1
+	return count == len(listOfLists1)
+def compareList(list1,list2):
+	count = 0
+	for i in range(len(list1)):
+		if list1[i] == list2[i]:
+			count += 1
+	return count == len(list1)
+
