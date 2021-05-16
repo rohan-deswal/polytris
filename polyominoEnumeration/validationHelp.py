@@ -1,5 +1,5 @@
 from math import sin,cos,radians
-
+from basePolyomino import *
 import numpy as np
 '''
 These are various helper functinos aid in 
@@ -22,26 +22,41 @@ def getRotations(basePolyomino):
 	of range function in the initial for loop
 	'''
 	rotations = []
-	for angle in range(0,360,90):
-		
-		'''
-		Here we apply the rotation matrix to every cell
-		to get the rotated polyomino
-		'''
-		rotatedPolyominoListOfCells = []
-		for cell in basePolyomino.listOfCells:
-			
-			cosAngle,sinAngle = cos(radians(angle)),sin(radians(angle))
-			
-			x = cell[0]
-			y = cell[1]
 
-			newX = int(x*cosAngle - y*sinAngle)
-			newY = int(x*sinAngle + y*cosAngle)
+	rotate0    = lambda cell: [cell[0],cell[1]]
+	rotate90   = lambda cell: [cell[1],-cell[0]]
+	rotate180  = lambda cell: [-cell[0],-cell[1]]
+	rotate270  = lambda cell: [-cell[1],cell[0]]
+	'''
+	Here we apply the rotation matrix to every cell
+	to get the rotated polyomino
+	'''
+	rotatedPolyominoListOfCells = []
+	for cell in basePolyomino.listOfCells:
+		newX,newY = rotate0(cell)
+		rotatedPolyominoListOfCells.append([newX,newY])
 
-			rotatedPolyominoListOfCells.append([newX,newY])
+	rotations.append(BasePolyomino(rotatedPolyominoListOfCells.copy()))
+	rotatedPolyominoListOfCells = []
+	for cell in basePolyomino.listOfCells:
+		newX,newY = rotate90(cell)
+		rotatedPolyominoListOfCells.append([newX,newY])
 
-		rotations.append(BasePolyomino(rotatedPolyominoListOfCells.copy()))
+	rotations.append(BasePolyomino(rotatedPolyominoListOfCells.copy()))
+	rotatedPolyominoListOfCells = []
+	for cell in basePolyomino.listOfCells:
+		newX,newY = rotate180(cell)
+		rotatedPolyominoListOfCells.append([newX,newY])
+
+	rotations.append(BasePolyomino(rotatedPolyominoListOfCells.copy()))
+	rotatedPolyominoListOfCells = []
+	for cell in basePolyomino.listOfCells:
+		newX,newY = rotate270(cell)
+		rotatedPolyominoListOfCells.append([newX,newY])
+
+	rotations.append(BasePolyomino(rotatedPolyominoListOfCells.copy()))
+	rotatedPolyominoListOfCells = []
+
 	return rotations
 
 def translateToOrigin(listOfCells):
@@ -55,15 +70,11 @@ def translateToOrigin(listOfCells):
 	'''
 	minX = min([cell[0] for cell in listOfCells])
 	minY = min([cell[1] for cell in listOfCells])
-	
-	# print(minX,minY)#Debugging
-	# print("Before:\n",listOfCells)#Debugging
+
 	
 	for i in range(len(listOfCells)):
 		listOfCells[i][0] -= minX
 		listOfCells[i][1] -= minY
-	
-	# print("After:\n",listOfCells)#Debugging
 
 	return listOfCells
 
@@ -71,7 +82,7 @@ def getValidationList(basePolyomino):
 	'''
 	This function returns a list of translated rotation states of the given polyomino
 	'''
-	return [translateToOrigin(rotatedBasePolyomino) for rotatedBasePolyomino in getRotations(basePolyomino)]
+	return [BasePolyomino(translateToOrigin(rotatedBasePolyomino.listOfCells)) for rotatedBasePolyomino in getRotations(basePolyomino)]
 
 def removeDuplicates(polyominoes):
 	'''
@@ -79,9 +90,9 @@ def removeDuplicates(polyominoes):
 	from a given list
 	'''
 	index = 0
-	
+	indicesToRemove = []
 	while index < len(polyominoes)-1:
-		indicesToRemove = [] # Here we initiate a list of which indices we have delete
+		 # Here we initiate a list of which indices we have delete
 		for i in range(index+1,len(polyominoes)):
 			'''
 			We are first picking a polyomino at index
@@ -92,7 +103,9 @@ def removeDuplicates(polyominoes):
 			The line below compares the list of cells of the current polyomino
 			to the list of cells of the next polyomino
 			'''
-			if compareListsOfLists(np.sort(polyominoes[index].listOfCells),np.sort(polyominoes[i].listOfCells)):
+			
+			
+			if compareListsOfLists(sorted([list(x) for x in polyominoes[index].listOfCells]),sorted([list(y) for y in polyominoes[i].listOfCells])):
 				indicesToRemove.append(i) # Adding the index to which has to be removed
 		index += 1
 
@@ -101,12 +114,13 @@ def removeDuplicates(polyominoes):
 		then we sort the list in reverse and use the del keyword
 		to delete polyominoes by index
 		'''
-		indicesToRemove = list(set(indicesToRemove))
-		indicesToRemove = sorted(indicesToRemove, reverse=True)
-		for subIndex in indicesToRemove:
-			del polyominoes[subIndex]
+	indicesToRemove = list(set(indicesToRemove))
+	indicesToRemove = sorted(indicesToRemove, reverse=True)
+	for subIndex in indicesToRemove:
+		polyominoes = np.delete(polyominoes, subIndex)
 	'''
 	Now we return a list of unique polyominoes
+
 	'''
 	return polyominoes
 
@@ -117,15 +131,16 @@ def removeByValidator(validator,polyominoes):
 	'''
 	index = 0
 	indicesToRemove = []
-	
+
 	while index < len(polyominoes):
-		if np.sort(validator.listOfCells) == np.sort(polyominoes.listOfCells):
+		if compareListsOfLists(sorted([list(x) for x in polyominoes[index].listOfCells]),sorted([list(y) for y in validator.listOfCells])):
 			indicesToRemove.append(index)
+		index+=1
 	
 	indicesToRemove = list(set(indicesToRemove))
 	indicesToRemove = sorted(indicesToRemove, reverse=True)
 	for index in indicesToRemove:
-		del polyominoes[index]
+		polyominoes = np.delete(polyominoes, index)
 	
 	return polyominoes
 
@@ -167,4 +182,3 @@ def compareList(list1,list2):
 		if list1[i] == list2[i]:
 			count += 1
 	return count == len(list1)
-

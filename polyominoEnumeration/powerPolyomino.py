@@ -33,11 +33,12 @@ class PowerPolyomino(BasePolyomino):
 		list so that bottom-left piece is at origin
 		'''
 		self.translateToOrigin()
+		
 		'''
 		This is to remove the duplicate polyominoes which 
 		could have been generated during the growth
 		'''
-		self.updatedPolyominoes = validationHelp.removeDuplicates(self.updatedPolyominoes)
+		self.updatedPolyominoes = np.copy(validationHelp.removeDuplicates(self.updatedPolyominoes))
 
 	def translateToOrigin(self):
 		'''
@@ -47,10 +48,8 @@ class PowerPolyomino(BasePolyomino):
 		'''
 
 		for i in range(len(self.updatedPolyominoes)):
-			# print("_________________________") #Debugging
 			# Creation of list to be sent translated
 			listOfCells = np.array([cell for cell in self.updatedPolyominoes[i].listOfCells])
-			# print(listOfCells) #Debugging
 			'''
 			Calling the translate function in validationHelp.py
 			and storing the new translated list
@@ -60,8 +59,6 @@ class PowerPolyomino(BasePolyomino):
 			Resetting the current Polyomino with the new translated list
 			'''
 			self.updatedPolyominoes[i].listOfCells = np.copy(newList)
-			# print("_________________________") #Debugging
-			# a = input()
 	def generateAdjacentCells(self):
 		'''
 		This is the function to generate a list cells
@@ -83,7 +80,6 @@ class PowerPolyomino(BasePolyomino):
 				Checking if the new cell is already there or
 				previously occupied
 				'''
-				# print(cell[0], cell[1], " : ", newAdjacent)
 
 				if not validationHelp.searchListInListOfLists(newAdjacent, self.adjacentCells):
 					if not validationHelp.searchListInListOfLists(newAdjacent, self.listOfCells):
