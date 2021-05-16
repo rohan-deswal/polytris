@@ -59,7 +59,8 @@ def enumeratePolyominoes(n):
 		newList.append(finalValidationList[0])
 	return newList
 
-x = enumeratePolyominoes(n := int(input("Enter N: ")))
+n = int(input("Enter N: "))
+x = enumeratePolyominoes(n)
 print("Results")
 for polyomino in x:
 	printPoly(polyomino.listOfCells, n)
