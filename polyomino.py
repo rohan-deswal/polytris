@@ -4,12 +4,14 @@ from random import random as rnd
 
 from polyominoEnumeration.basePolyomino import *
 
-def hsv_to_rgb(h, s, v):
-	'''To convert HSV to RGB, 
+def type_color(type, no_of_polyomino):
+	''' To assign color to each type of polyomino
+	To convert HSV to RGB, 
 	H should be between 0 <= H < 360
 	S and V should be between 0 and 1
 
 	Formula courtesy of https://www.rapidtables.com/convert/color/hsv-to-rgb.html'''
+	h, s, v = type * 360/no_of_polyomino, 0.7, 1
 	c = s * v
 	x = c * (1 - abs((h/60)%2 - 1))
 	m = v - c
@@ -38,9 +40,10 @@ class Polyomino:
 	def __init__(self,n,xPos,yPos,scale,wl,wr, vel, no_of_polyomino, polyomino_piece):
 		self.n = n
 		self.no_of_polyomino = no_of_polyomino
+		self.polyomino_piece = polyomino_piece
 		self.type = polyomino_piece[0]
 		self.shapeCoords = polyomino_piece[1].listOfCells.copy()
-		self.color = hsv_to_rgb(self.type * 360/no_of_polyomino, 0.7, 1)
+		self.color = type_color(self.type, no_of_polyomino)
 		self.xPos = xPos
 		self.yPos = yPos
 		self.x = xPos * scale

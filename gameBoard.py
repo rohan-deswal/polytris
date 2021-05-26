@@ -39,8 +39,8 @@ class GameBoard:
 
 		self.n = n
 
-		#Timing variables for tuck and DAS
-		self.velocity = -1
+		#Timing variables for velocity, tuck and DAS
+		self.velocity = -3
 		self.begin = time()
 		self.delayedAutoShiftRate = 1
 		self.polyominoTuckDelay = 1
@@ -49,10 +49,15 @@ class GameBoard:
 
 		#generate a of all possible polyominoes
 		self.polyominoList = list(enumerate(enumeratePolyominoes(n)))
-		self.bag = list(range(len(self.polyominoList)))*2
-		self.current_piece_counter = 0
-
 		self.no_of_polyomino = len(self.polyominoList)
+
+		self.bag = list(range(self.no_of_polyomino))
+		self.next_bag = self.bag.copy()
+		# shuffle(self.bag)
+		# shuffle(self.next_bag)
+		self.current_piece_counter = -1
+
+		self.held_piece = None
 
 		#Handles the current falling polyomino, its position, collision, rotation, etc
 		self.polyomino = Polyomino(n, self.startX, self.startY, self.grid, n+1, \
@@ -64,26 +69,26 @@ class GameBoard:
 	def draw_hold(self):
 		'''Draws the polynimo holding chamber, by default the box is 4 grid widths wide
 		   this value is kind of hard coded, but it will be visually appealing 
-		   Pieces have to be shrunk to display
-
-		   block_drawing_function represents the function to draw held blocks by the polynimo
-		   class, the polynimo should be shrunk to properly fit in the hold area, no transformations 
-		   are to be done by the polynimo class
-		   all transformations are handled by the GameBoard class'''
+		   Pieces have to be shrunk to display'''
 
 		hold_size = (self.n)*self.grid
 		hold_x = self.init_x + self.grid//2
 		hold_y = self.init_y + self.height - hold_size - self.grid//2
 		shapes.Rectangle(hold_x, hold_y, hold_size, hold_size, (255,255,255)).draw()
 
+		if self.held_piece is not None:
+			held_piece_shapeCoords = self.held_piece[1].listOfCells
+			held_piece_type = self.held_piece[0]
+			for point in held_piece_shapeCoords:
+				piece_x = point[0]*self.grid + hold_x
+				piece_y = point[1]*self.grid + hold_y
+				shapes.BorderedRectangle(piece_x, piece_y,
+										  self.grid, self.grid, 1,
+										  type_color(held_piece_type, self.no_of_polyomino),(0,0,0)).draw()
+
 	def draw_playing_area(self):
 		'''Draws the actual palying area, dimensions are hard coded to be 10x20 following the 
-		   standard tetris board
-
-		   block_drawing_function represents the drawing function of the polynimo that will be handled
-		   by the polynimo class, the polynimo drawing functions should take in the x and y values for the
-		   playing area and draw the pieces accordingly without any transformation
-		   all transformations are handled by the GameBoard class'''
+		   standard tetris board'''
 
 		play_x = self.init_x + (self.n+1)*self.grid
 		play_y = self.init_y
@@ -96,17 +101,22 @@ class GameBoard:
 
 	def draw_preview(self):
 		'''Draws the next piece, currently the number of pieces that can be displayed is 1
-		   But it can be easily changed to any value
-
-		   block_drawing_function represents the function of polynimo class that will draw the
-		   upcoming polynimos, pieces are to be shrunk to properly fit in the preview area
-		   no transformations are to be done by the polynimo class
-		   all transformations are handled by the GameBoard class'''
+		   But it can be easily changed to any value'''
 
 		preview_size = (self.n)*self.grid
 		preview_x = self.init_x + ((self.game_board_size[0] - (self.n+1))*2 + 1)*self.grid//2
 		preview_y = self.init_y + self.height - preview_size - self.grid//2
 		shapes.Rectangle(preview_x, preview_y, preview_size, preview_size, (255,255,255)).draw()
+		
+		next_piece = self.next_piece(view = True)
+		next_piece_shapeCoords = next_piece[1].listOfCells
+		next_piece_type = next_piece[0]
+		for point in next_piece_shapeCoords:
+			piece_x = point[0]*self.grid + preview_x
+			piece_y = point[1]*self.grid + preview_y
+			shapes.BorderedRectangle(piece_x, piece_y,
+									  self.grid, self.grid, 1,
+									  type_color(next_piece_type, self.no_of_polyomino),(0,0,0)).draw()
 
 	def update(self, window, keys):
 		if self.pile.collidePolyomino(self.polyomino.shapeCoords):
@@ -151,15 +161,33 @@ class GameBoard:
 				self.pile.hardDrop(self.polyomino.shapeCoords, self.polyomino.color)
 				self.polyomino.reset(self.startX, self.startY, self.next_piece())
 				self.pile.update()
+			elif symbol == LSHIFT:
+				self.polyomino.reset(self.startX, self.startY, self.hold_piece())
 		else:
 			if symbol == LEFT or symbol == RIGHT:
 			    self.polyomino.setxdir(0)
 
-	def next_piece(self):
-		piece_index = self.bag[self.current_piece_counter]
+	def next_piece(self, view = False):
+		if view:
+			try:
+				return self.polyominoList[self.bag[self.current_piece_counter + 1]]
+			except IndexError:
+				return self.polyominoList[self.next_bag[0]]
+
 		self.current_piece_counter = (self.current_piece_counter + 1) % len(self.bag)
-		
+		piece_index = self.bag[self.current_piece_counter]
+
 		if self.current_piece_counter == 0:
-			shuffle(self.bag)
+			self.bag = self.next_bag.copy()
+			shuffle(self.next_bag)
 
 		return self.polyominoList[piece_index]
+
+	def hold_piece(self):
+		if self.held_piece == None:
+			self.held_piece = self.polyomino.polyomino_piece
+			return self.next_piece()
+
+		to_be_returned_piece = self.held_piece
+		self.held_piece = self.polyomino.polyomino_piece
+		return to_be_returned_piece
