@@ -2,13 +2,13 @@ from pyglet import shapes
 
 class Cell:
 
-	def __init__(self, position, size, color):
+	def __init__(self, position):
 		self.position = position
-		self.size = size
-		self.color = color
 
-	def draw(self):
-		shapes.Rectangle(self.position[0], self.position[1], self.size, self.size, self.color).draw()
+	def draw(self, scale, wl, bottom):
+		shapes.BorderedRectangle((self.position[0] + wl)*scale, (self.position[1] + bottom)*scale,
+									  scale, scale, 1,
+									  (150, 150, 150),(50, 50, 50)).draw()
 
 	def update(self, dt, vx, vy):
 		self.position[0] += vx*dt

@@ -3,19 +3,50 @@ from pyglet import shapes
 from random import seed
 from random import random as rnd
 
+from basePolyomino import *
+
+def hsv_to_rgb(h, s, v):
+	'''To convert HSV to RGB, 
+	H should be between 0 <= H < 360
+	S and V should be between 0 and 1
+
+	Formula courtesy of https://www.rapidtables.com/convert/color/hsv-to-rgb.html'''
+	c = s * v
+	x = c * (1 - abs((h/60)%2 - 1))
+	m = v - c
+
+	rgb_ = (0, 0, 0)
+	if h<60:
+		rgb_ = (c, x, 0)
+	elif h<120:
+		rgb_ = (x, c, 0)
+	elif h<180:
+		rgb_ = (0, c, x)
+	elif h<240:
+		rgb_ = (0, x, c)
+	elif h<300:
+		rgb_ = (x, 0, c)
+	elif h<360:
+		rgb_ = (c, 0, x)
+
+	return (int((rgb_[0]+m)*255), int((rgb_[1]+m)*255), int((rgb_[2]+m)*255))
+
 rotationValues = {
 	'c': [0,-1],
 	'a': [0,1]
 }
 class Polyomino:
-	def __init__(self,n,xPos,yPos,scale,wl,wr):
+	def __init__(self,n,xPos,yPos,scale,wl,wr, vel, no_of_polyomino, polyomino_piece):
 		self.n = n
-		self.shapeCoords,self.shapeMatrix = getPolyomino_Backtracking(n)
+		self.no_of_polyomino = no_of_polyomino
+		self.type = polyomino_piece[0]
+		self.shapeCoords = polyomino_piece[1].listOfCells.copy()
+		self.color = hsv_to_rgb(self.type * 360/no_of_polyomino, 0.7, 1)
 		self.xPos = xPos
 		self.yPos = yPos
 		self.x = xPos * scale
 		self.y = yPos * scale
-		self.vel = -0.5
+		self.vel = vel
 		self.scale = scale
 		self.xdir = 0
 		for coord in self.shapeCoords:
@@ -23,16 +54,10 @@ class Polyomino:
 			coord[1] += yPos
 		self.wallLeft = wl
 		self.wallRight = wr
-		self.seed = 0
-		self.genSeed()
-	def reset(self,xPos,yPos):
-		self.__init__(self.n, xPos, yPos,self.scale,self.wallLeft,self.wallRight)
 
-	def genSeed(self):
-		for i in range(self.n):
-			for j in range(self.n):
-				if self.shapeMatrix[i][j] == 1:
-					self.seed += (i+1) + (j+1)*self.n
+	def reset(self,xPos,yPos, polyomino_piece):
+		self.__init__(self.n, xPos, yPos,self.scale,self.wallLeft,self.wallRight, \
+			self.vel, self.no_of_polyomino, polyomino_piece)
 
 	def update(self,ydir):
 		self.y += self.vel*ydir		
@@ -107,9 +132,8 @@ class Polyomino:
 				
 	def draw(self):
 		for point in self.shapeCoords:
-			seed(self.seed)
 			i = point[0]
 			j = point[1]
 			shapes.BorderedRectangle(i*self.scale, j*self.scale,
 									  self.scale, self.scale,1,
-									  (int(255*rnd()),int(255*rnd()),int(255*rnd())),(0,0,0)).draw()
+									  self.color,(0,0,0)).draw()
