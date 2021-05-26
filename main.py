@@ -1,6 +1,5 @@
 import pyglet
 from gameBoard import *
-from pile import *
 from pyglet.window.key import *
 from time import time
 

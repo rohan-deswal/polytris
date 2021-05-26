@@ -1,9 +1,8 @@
-from polyominoGen import *
 from pyglet import shapes
 from random import seed
 from random import random as rnd
 
-from basePolyomino import *
+from polyominoEnumeration.basePolyomino import *
 
 def hsv_to_rgb(h, s, v):
 	'''To convert HSV to RGB, 

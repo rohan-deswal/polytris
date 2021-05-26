@@ -1,5 +1,5 @@
 from math import sin,cos,radians
-from basePolyomino import *
+from polyominoEnumeration.basePolyomino import *
 import numpy as np
 '''
 These are various helper functinos aid in 

@@ -1,6 +1,6 @@
-from powerPolyomino import PowerPolyomino
-from basePolyomino import BasePolyomino
-from validationHelp import *
+from polyominoEnumeration.powerPolyomino import PowerPolyomino
+from polyominoEnumeration.basePolyomino import BasePolyomino
+from polyominoEnumeration.validationHelp import *
 
 '''
 This is the main Polyomino Enumeration function which handles:
@@ -59,9 +59,9 @@ def enumeratePolyominoes(n):
 		newList.append(finalValidationList[0])
 	return newList
 
-n = int(input("Enter N: "))
-x = enumeratePolyominoes(n)
-print("Results")
-for polyomino in x:
-	printPoly(polyomino.listOfCells, n)
-print(len(x))
+# n = int(input("Enter N: "))
+# x = enumeratePolyominoes(n)
+# print("Results")
+# for polyomino in x:
+# 	printPoly(polyomino.listOfCells, n)
+# print(len(x))

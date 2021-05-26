@@ -4,9 +4,8 @@ from pyglet.window.key import *
 from random import shuffle
 
 from polyomino import *
-from pile_redesign import *
-from polyominoEnumerate import *
-from basePolyomino import *
+from pile import *
+from polyominoEnumeration.polyominoEnumerate import *
 
 def width_height(bottom_left, top_right, game_board_size):
 	'''Maintains the required aspect ratio of the board and changes the provided top_right point
@@ -60,7 +59,7 @@ class GameBoard:
 			self.game_board_size[0] - (n+1), self.velocity, self.no_of_polyomino, self.next_piece())
 
 		#Handles the pile accumulated, line clearing, collision with current polyomino, etc
-		self.pile = Pile_redesign(self.grid, self.game_board_size[1], n+1, self.game_board_size[0] - (n+1))
+		self.pile = Pile(self.grid, self.game_board_size[1], n+1, self.game_board_size[0] - (n+1))
 
 	def draw_hold(self):
 		'''Draws the polynimo holding chamber, by default the box is 4 grid widths wide

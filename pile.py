@@ -1,77 +1,87 @@
 from pyglet import shapes
+
 class Pile:
-	def __init__(self,scale,wl,wr,bottom = -1):
+	def __init__(self,scale,gridHeight,wl,wr,bottom = -1,):
 		self.scale = scale
-		self.cellCoords = []
-		for xPos in range(wl,wr):
-			self.cellCoords.append([xPos,bottom])
+		self.grid = [[None for i in range(gridHeight+1)]for j in range(wr-wl)]
+		self.gridHeight = gridHeight
+		for i in range(wr-wl):
+			self.grid[i][0] = (0, 0, 0)
 		self.bottom = bottom
 		self.maxY = bottom + 1
 		self.wallLeft = wl
 		self.wallRight = wr
 
-	def addToPile(self,shapeCoords):
+	def indexX(self,point):
+		return point[0] - self.wallLeft
+	def indexY(self,point):
+		return point[1] - self.bottom
+	def addToPile(self, shapeCoords, color):
 		for point in shapeCoords:
-			self.cellCoords.append([point[0],point[1]])
+			self.grid[self.indexX(point)][self.indexY(point)] = color
 			if point[1] > self.maxY:
 				self.maxY = point[1]
 
-	def collidePolyomino(self,shapeCoords):
-		for piece in shapeCoords:
-			if self.findList([piece[0],piece[1]-1]):
-				return True
-		return False
+	def rotationCheck(self,shapeCoords):
+		pass
 
-	def addPolyomino(self,shapeCoords):
-		for piece in shapeCoords:
-			self.addToPile(shapeCoords)
-			
-	def findList(self,coord):
-		for point in self.cellCoords:
-			if point[0] == coord[0] and point[1] == coord[1]:
-				return True
+	def collidePolyomino(self,shapeCoords):
+		for point in shapeCoords:
+			try:
+				if self.grid[self.indexX(point)][self.indexY(point) - 1] is not None:
+					return True
+			except IndexError:
+				continue
 		return False
 
 	def update(self):
-		count = 0
-		for y in range(self.bottom + 1,self.maxY+1):
-			for x in range(self.wallLeft,self.wallRight):
-				if self.findList([x,y]):
-					count += 1
-			print(count,self.wallRight - self.wallLeft)
-			if count == self.wallRight - self.wallLeft:
-				print("Found")
-				for nx in range(self.wallLeft,self.wallRight):
-					self.cellCoords.remove([nx,y])
-				for ny in range(y+1,self.maxY+1):
-					for nx in range(self.wallLeft,self.wallRight):
-						if self.findList([nx,ny]):
-							self.cellCoords.pop([nx,ny])
-							self.cellCoords.append([nx,ny-1])
+		y = 1
+		while y<self.gridHeight+1:
+			sumPoly = 0
+			for x in range(self.wallRight-self.wallLeft):
+				if self.grid[x][y] is not None:
+					sumPoly += 1
+					
+			if sumPoly == self.wallRight-self.wallLeft:
+				for x in range(self.wallRight-self.wallLeft):
+					self.grid[x][y] = None
 
-			count = 0
-
+				for ny in range(y+1,self.gridHeight+1):
+					for x in range(self.wallRight-self.wallLeft):
+						try:
+							if self.grid[x][ny] is not None:
+								self.grid[x][ny-1] = self.grid[x][ny]
+								self.grid[x][ny] = None
+						except IndexError:
+							pass
+			else:
+				y += 1
 	def pullDown(self,shapeCoords):
 		for point in shapeCoords:
 			point[1] -= 1
 		return shapeCoords
 
-	def hardDrop(self,shapeCoords):
+	def hardDrop(self,shapeCoords, color):
 		while True:
 			if self.collidePolyomino(shapeCoords):
-				self.addPolyomino(shapeCoords)
+				self.addToPile(shapeCoords, color)
 				break
 			shapeCoords = self.pullDown(shapeCoords)
 
 	def verifyXMotion(self,shapeCoords,xdir):
 		for point in shapeCoords:
-			if self.findList([point[0] + xdir,point[1]]):
-				return False
+			try:
+				if self.grid[self.indexX(point) + xdir][self.indexY(point)] is not None:
+					return False
+			except IndexError:
+				continue
 		else:
 			return True
 
 	def draw(self):
-		for coord in self.cellCoords:
-			i = coord[0]
-			j = coord[1]
-			shapes.BorderedRectangle(i*self.scale, j*self.scale, self.scale, self.scale,1,(255,179,71),(0,0,0)).draw()
+		for x in range(len(self.grid)):
+			for y in range(len(self.grid[0])):
+				if self.grid[x][y] is not None:
+					i = self.wallLeft + x
+					j = y + self.bottom
+					shapes.BorderedRectangle(i*self.scale, j*self.scale, self.scale, self.scale,1,self.grid[x][y],(0,0,0)).draw()

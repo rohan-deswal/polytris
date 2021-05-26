@@ -1,5 +1,5 @@
-from basePolyomino import BasePolyomino
-import validationHelp
+from polyominoEnumeration.basePolyomino import BasePolyomino
+import polyominoEnumeration.validationHelp as validationHelp
 
 import numpy as np
 '''
