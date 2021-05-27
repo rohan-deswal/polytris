@@ -47,6 +47,7 @@ class Polyomino:
 		self.type = polyomino_piece[0]
 		self.shapeCoords = polyomino_piece[1].listOfCells.copy()
 		self.color = type_color(self.type, no_of_polyomino)
+		self.spawnLocation = yPos
 		self.xPos = xPos
 		self.yPos = yPos
 		self.x = xPos * scale
@@ -139,6 +140,7 @@ class Polyomino:
 		for point in self.shapeCoords:
 			i = point[0]
 			j = point[1]
-			shapes.BorderedRectangle(i*self.scale, j*self.scale,
-									  self.scale, self.scale,1,
-									  self.color,(0,0,0)).draw()
+			if j < self.spawnLocation:
+				shapes.BorderedRectangle(i*self.scale, j*self.scale,
+										  self.scale, self.scale,1,
+										  self.color,(0,0,0)).draw()
