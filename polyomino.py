@@ -32,6 +32,9 @@ def type_color(type, no_of_polyomino):
 
 	return (int((rgb_[0]+m)*255), int((rgb_[1]+m)*255), int((rgb_[2]+m)*255))
 
+def polyomino_geometric_center(shapeCoords):
+	return max([point[0] for point in shapeCoords])/2, max([point[1] for point in shapeCoords])/2 
+
 rotationValues = {
 	'c': [0,-1],
 	'a': [0,1]

@@ -4,7 +4,7 @@ from pyglet.window.key import *
 from time import time
 
 n = 4 #the 'n' in n-tris
-width = 900
+width = 960
 height = 600
 
 board_size = (20, 20)
