@@ -6,7 +6,7 @@ from time import time
 n = 5 #the 'n' in n-tris
 width = 960
 height = 600
-board_size = (25, 20)
+board_size = (20, 20)
 
 window = pyglet.window.Window(width, height, caption = 'Polytris')
 batch = pyglet.graphics.Batch()
