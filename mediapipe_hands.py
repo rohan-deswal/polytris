@@ -27,9 +27,10 @@ def hand_capture(queue):
             # pass by reference.
             image.flags.writeable = False
             results = hands.process(image)
+            image = np.zeros(image.shape)
             # Draw the hand annotations on the image.
             image.flags.writeable = True
-            image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+            # image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
             if results.multi_hand_landmarks:
                 coordinates = np.array([[landmark.x, landmark.y, landmark.z] for landmark in results.multi_hand_landmarks[0].landmark], dtype=np.float16)
                 queue.put(coordinates)
