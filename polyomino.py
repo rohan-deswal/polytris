@@ -85,30 +85,31 @@ class Polyomino:
 		return [x_centreOfMass,y_centreOfMass]
 
 	def rotate(self,rdir):
-		 pivot = self.centreOfMass()
-		 minVal = self.findMinX_or_Y(rdir)
+		pivot = self.centreOfMass()
+		minVal = self.findMinX_or_Y(rdir)
 
-		 for point in self.shapeCoords:
-		 	c,s = rotationValues[rdir][0],rotationValues[rdir][1]
+		for point in self.shapeCoords:
+			c,s = rotationValues[rdir][0],rotationValues[rdir][1]
 
-		 	nx = point[0] - pivot[0]
-		 	ny = point[1] - pivot[1]
+			nx = point[0] - pivot[0]
+			ny = point[1] - pivot[1]
 
-		 	rx = nx*c - ny*s
-		 	ry = nx*s + ny*c
+			rx = nx*c - ny*s
+			ry = nx*s + ny*c
 
-		 	point[0] = rx + pivot[0]
-		 	point[1] = ry + pivot[1]
+			point[0] = rx + pivot[0]
+			point[1] = ry + pivot[1]
 
-		 newMinVal = self.findMinX_or_Y(rdir)
-		 diff = minVal - newMinVal
+		newMinVal = self.findMinX_or_Y(rdir)
+		diff = minVal - newMinVal
 
-		 if rdir == 'c':
-		 	for point in self.shapeCoords:
+		if rdir == 'c':
+			for point in self.shapeCoords:
 		 		point[1] += diff
-		 elif rdir == 'a':
-		 	for point in self.shapeCoords:
+		elif rdir == 'a':
+			for point in self.shapeCoords:
 		 		point[0] += diff
+		self.wallConstraint()
 
 	def setxdir(self,xdir):
 		self.xdir = xdir
