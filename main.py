@@ -8,7 +8,7 @@ from multiprocessing import Process, Queue
 from mediapipe_hands import *
 
 def main():
-	n = 1 #the 'n' in n-tris
+	n = 4 #the 'n' in n-tris
 	width = 960
 	height = 600
 
@@ -46,12 +46,13 @@ def main():
 def test_main(queue):
 	while True:
 		start = time()
-		print(queue.get())
+		print(type(queue.get()), end='\n\n')
 		print("Elapsed:", time() - start)
 
 if __name__ == "__main__":
 	# main()
 	q = Queue()
+	print("Starting...")
 	p1 = Process(target=hand_capture, args=(q,))
 	p2 = Process(target=test_main, args=(q,))
 	p1.start()
