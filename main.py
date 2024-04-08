@@ -3,7 +3,7 @@ from gameBoard import *
 from pyglet.window.key import *
 from time import time
 
-n = 5 #the 'n' in n-tris
+n = 4 #the 'n' in n-tris
 width = 960
 height = 600
 board_size = (20, 20)
